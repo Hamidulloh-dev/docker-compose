@@ -1,0 +1,38 @@
+name: blog-platform
+
+services:
+  database:
+    image: postgres:15
+    container_name: pg_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 0000
+      POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5433"
+
+  backend:
+    build:
+      context: .
+    container_name: backend_container
+    ports:
+      - "4000:5000"
+    environment:
+      DATABASE_URL: postgres://postgres:0000@database:5432/mydb
+    depends_on:
+      - database
+
+  frontend:
+    image: nginx:alpine
+    container_name: frontend_container
+    ports:
+      - "80:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
