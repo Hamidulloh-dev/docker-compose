@@ -1,0 +1,16 @@
+name: my-compose
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:17.5
+    env_file:
+      - .env
